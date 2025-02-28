@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\comparison;
+use App\Models\Comparison;
 use Illuminate\Http\Request;
 
 class ComparisonController extends Controller
@@ -12,7 +12,7 @@ class ComparisonController extends Controller
      */
     public function index()
     {
-        $comparisons = comparison::all();
+        $comparisons = Comparison::all();
         return view('comparison.index', compact('comparisons'));
     }
 
@@ -34,9 +34,15 @@ class ComparisonController extends Controller
             'input2' => 'required|string'
         ]);
 
-        $Percentage = comparison::comparisons($request->input1, $request->input2);
+        // Buat instance model Comparison
+        $comparison = new Comparison([
+            'input1' => $request->input1,
+            'input2' => $request->input2
+        ]);
 
-        $comparison = comparison::create([
+        $Percentage = $comparison->comparisons();
+
+        $comparison = Comparison::create([
             'input1' => $request->input1,
             'input2' => $request->input2,
             'percentage' => $Percentage
@@ -48,7 +54,7 @@ class ComparisonController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(comparison $comparison)
+    public function show(Comparison $comparison)
     {
         //
     }
@@ -56,7 +62,7 @@ class ComparisonController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(comparison $comparison)
+    public function edit(Comparison $comparison)
     {
         //
     }
@@ -64,7 +70,7 @@ class ComparisonController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, comparison $comparison)
+    public function update(Request $request, Comparison $comparison)
     {
         //
     }
@@ -74,7 +80,7 @@ class ComparisonController extends Controller
      */
     public function destroy($id)
     {
-        $comparison = comparison::find($id);
+        $comparison = Comparison::find($id);
         $comparison->delete();
         return redirect()->route('dashboard')->with('success', 'Comparison deleted successfully');
     }
